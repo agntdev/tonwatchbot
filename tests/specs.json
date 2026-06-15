@@ -377,5 +377,69 @@
         ]
       }
     ]
+  },
+  {
+    "name": "/admin_stats works for an admin",
+    "steps": [
+      {
+        "send": { "text": "/admin_stats", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/admin_stats from a non-admin is silently dropped (no reply)",
+    "steps": [
+      {
+        "send": { "text": "/admin_stats" },
+        "expect": []
+      }
+    ]
+  },
+  {
+    "name": "/admin_users shows paginated users",
+    "steps": [
+      {
+        "send": { "text": "/admin_users", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/admin_alerts shows top tokens and recent events",
+    "steps": [
+      {
+        "send": { "text": "/admin_alerts 24h", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/admin_alerts with an invalid period shows usage",
+    "steps": [
+      {
+        "send": { "text": "/admin_alerts 12h", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Usage: /admin_alerts <24h|7d|30d>" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/admin_export with bad usage shows the usage line",
+    "steps": [
+      {
+        "send": { "text": "/admin_export foo", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Usage: /admin_export <users|alerts> <24h|7d|30d>" } }
+        ]
+      }
+    ]
   }
 ]

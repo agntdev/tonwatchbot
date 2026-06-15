@@ -7,7 +7,7 @@
 import { inlineButton, inlineKeyboard } from "@agntdev/bot-toolkit";
 import type { Bot } from "grammy";
 import type { Ctx } from "../bot.js";
-import { TokenNotFoundError, type PriceSource, buildQuote } from "../prices.js";
+import { TokenNotFoundError, type PriceSource, buildQuote, resolvedToToken } from "../prices.js";
 import { isPlausibleContractAddress } from "./add.js";
 import type { Store } from "../store.js";
 
@@ -45,6 +45,7 @@ export function registerPrice(bot: Bot<Ctx>, store: Store, prices: PriceSource):
     }
     try {
       const resolved = await prices.resolveToken(arg);
+      store.upsertToken(resolvedToToken(resolved));
       const oneH = store.sampleAtOrBefore(resolved.contractAddress, resolved.sampledAt - 60 * 60_000);
       const oneD = store.sampleAtOrBefore(resolved.contractAddress, resolved.sampledAt - 24 * 60 * 60_000);
       const quote = buildQuote(

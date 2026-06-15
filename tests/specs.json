@@ -548,5 +548,44 @@
         ]
       }
     ]
+  },
+  {
+    "name": "E2E: full new-user journey start -> add -> list -> remove",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "tz:select:UTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "defaults:keep" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "/list" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "/remove" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "watch:remove:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "callback": "watch:remove:yes:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "text": "/list" }, "expect": [{ "method": "sendMessage" }] }
+    ]
+  },
+  {
+    "name": "E2E: /list -> Price -> Add to watchlist (from_price)",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "tz:select:UTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "defaults:keep" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "/list" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "/price EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:from_price:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageReplyMarkup" }] }
+    ]
+  },
+  {
+    "name": "E2E: settings -> defpct -> re-list with new defaults",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "tz:select:UTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "defaults:keep" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "/settings" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "settings:defpct" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "10" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] }
+    ]
   }
 ]

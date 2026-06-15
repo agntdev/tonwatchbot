@@ -377,5 +377,149 @@
         ]
       }
     ]
+  },
+  {
+    "name": "watch:settings shows the per-watch card",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "callback": "watch:settings:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          { "method": "editMessageText" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "watch:set_abs accepts a positive USD amount",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "watch:settings:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "callback": "watch:set_abs:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      {
+        "send": { "text": "1.50" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "watch:set_abs rejects a negative number",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "watch:settings:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "callback": "watch:set_abs:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      {
+        "send": { "text": "-1" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "watch:clear_abs clears the price threshold",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "watch:settings:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      {
+        "send": { "callback": "watch:clear_abs:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          { "method": "editMessageText" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "watch:set_pct accepts a positive number",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "watch:settings:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "callback": "watch:set_pct:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      {
+        "send": { "text": "3.5" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "watch:set_pct rejects a non-positive number",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "watch:settings:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "callback": "watch:set_pct:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      {
+        "send": { "text": "0" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "watch:set_time accepts a valid range",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "watch:settings:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "callback": "watch:set_time:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      {
+        "send": { "text": "120" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "watch:set_time rejects values out of range",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "watch:settings:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "callback": "watch:set_time:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "editMessageText" }] },
+      {
+        "send": { "text": "3" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "add:customize chains through pct, abs, and timeframe",
+    "steps": [
+      {
+        "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" },
+        "expect": [{ "method": "sendMessage" }]
+      },
+      {
+        "send": { "callback": "add:customize:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" },
+        "expect": [{ "method": "answerCallbackQuery" }, { "method": "sendMessage" }]
+      },
+      {
+        "send": { "text": "2.5" },
+        "expect": [{ "method": "sendMessage" }]
+      },
+      {
+        "send": { "text": "1.25" },
+        "expect": [{ "method": "sendMessage" }]
+      },
+      {
+        "send": { "text": "30" },
+        "expect": [{ "method": "sendMessage" }]
+      }
+    ]
   }
 ]

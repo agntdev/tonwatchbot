@@ -17,9 +17,9 @@ export type DialogState =
   | { kind: "settings_deftime" }
   | { kind: "add_confirm"; contract: string }
   | { kind: "remove_confirm"; tokenId: string }
-  | { kind: "watch_abs"; tokenId: string }
-  | { kind: "watch_pct"; tokenId: string }
-  | { kind: "watch_time"; tokenId: string };
+  | { kind: "watch_abs"; tokenId: string; chain?: boolean }
+  | { kind: "watch_pct"; tokenId: string; chain?: boolean }
+  | { kind: "watch_time"; tokenId: string; chain?: boolean };
 
 export interface Session {
   /** Currently-active dialog state. undefined = no active dialog. */

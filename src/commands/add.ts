@@ -109,7 +109,7 @@ export function registerAdd(bot: Bot<Ctx>, store: Store, prices: PriceSource): v
       lastAlertState: {},
       cooldownUntil: 0,
     });
-    ctx.session.dialog = { kind: "watch_pct", tokenId: token.contractAddress };
+    ctx.session.dialog = { kind: "watch_pct", tokenId: token.contractAddress, chain: true };
     await ctx.answerCallbackQuery();
     await ctx.reply(
       `Customize ${token.symbol}. Send the percent threshold (e.g. \`2.5\`).`,

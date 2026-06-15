@@ -8,6 +8,7 @@ import { configFromEnv } from "./config.js";
 import { StubPriceSource } from "./prices.js";
 import { PricePoller } from "./poller.js";
 import { AlertEngine, evaluateAlerts } from "./alerts.js";
+import { SummaryScheduler } from "./scheduler.js";
 import { Store } from "./store.js";
 
 const token = process.env.BOT_TOKEN;
@@ -22,9 +23,11 @@ const prices = new StubPriceSource();
 const bot = buildBot(token, { store, prices, cfg });
 const poller = new PricePoller(store, prices, cfg, evaluateAlerts);
 const engine = new AlertEngine(bot, store, cfg);
+const scheduler = new SummaryScheduler(store);
 
 poller.start();
 engine.start();
+scheduler.start();
 
 console.log("[tonwatchbot] starting long polling");
 void bot.start();
@@ -34,6 +37,7 @@ const shutdown = (): void => {
   console.log("[tonwatchbot] shutting down");
   poller.stop();
   engine.stop();
+  scheduler.stop();
   process.exit(0);
 };
 process.once("SIGINT", shutdown);

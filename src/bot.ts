@@ -7,6 +7,7 @@ import { createBot, type BotContext } from "@agntdev/bot-toolkit";
 import type { Bot } from "grammy";
 
 import { registerAdd } from "./commands/add.js";
+import { registerAdmin } from "./commands/admin.js";
 import { registerListRemove } from "./commands/list_remove.js";
 import { registerPrice } from "./commands/price.js";
 import { handleSettingsText, registerSettings } from "./commands/settings.js";
@@ -53,6 +54,7 @@ export function buildBot(token: string, deps: BuildBotDeps): Bot<Ctx> {
   registerListRemove(bot, store);
   registerPrice(bot, store, deps.prices);
   registerSettings(bot, store);
+  registerAdmin(bot, store);
 
   // ── /help: list of commands (kept short, F02-F11 enhance with detail) ─
   bot.command("help", async (ctx) => {

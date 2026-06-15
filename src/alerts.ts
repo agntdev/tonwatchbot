@@ -13,7 +13,7 @@
 // can fire on the same watch.
 
 import type { Bot } from "grammy";
-import { inQuietHours, quietHoursEndAt, type BotConfig } from "./config.js";
+import { inQuietHours, isSameLocalDay, quietHoursEndAt, type BotConfig } from "./config.js";
 import type { OutboxRow, PriceSample, User, Watch } from "./types.js";
 import { Store } from "./store.js";
 
@@ -134,9 +134,15 @@ function computeDueAt(user: User, now: number, _cfg: BotConfig): number {
 export function scheduleDailySummary(store: Store, user: User, now = Date.now()): void {
   if (!user.timezone) return;
   if (!user.notificationPreferences.summaryEnabled) return;
-  // Compose the same payload the on-demand /summary would render.
   const watches = store.listWatches(user.telegramChatId);
   if (watches.length === 0) return;
+  // Deduplicate by calendar day: only one summary per local day.
+  for (const e of store.alertEvents) {
+    if (e.userId === user.telegramChatId && e.type === "summary" && isSameLocalDay(e.firedAt, user.timezone, new Date(now))) {
+      return;
+    }
+  }
+  // Compose the same payload the on-demand /summary would render.
   const lines: Array<{ symbol: string; priceUsd: number; change1h: number; change24h: number }> = [];
   for (const w of watches) {
     const t = store.getToken(w.tokenId);
@@ -157,11 +163,19 @@ export function scheduleDailySummary(store: Store, user: User, now = Date.now())
     source: "scheduled",
     sampledAt: now,
   };
+  // Record a summary AlertEvent for deduplication.
+  store.recordAlertEvent({
+    userId: user.telegramChatId,
+    tokenId: null,
+    type: "summary",
+    firedAt: now,
+    payload: { source: "scheduled" },
+  });
   // Suppress duplicate: if a summary for this user is already pending, skip.
   if (store.outbox.some((o) => o.userId === user.telegramChatId && o.kind === ALERT_KIND_SUMMARY && o.state === "pending")) {
     return;
   }
-  const dueAt = computeDueAt(user, now, { pollIntervalMs: 0, alertTickMs: 0, alertDrainBatch: 0, cooldownMinutes: 0, hysteresisBand: 0, sourceOutageMinutes: 0, adminChatIds: [] });
+  const dueAt = computeDueAt(user, now, { pollIntervalMs: 0, alertTickMs: 0, alertDrainBatch: 0, cooldownMinutes: 0, hysteresisBand: 0, sourceOutageMinutes: 0, summaryCheckIntervalMs: 0, adminChatIds: [] });
   store.enqueueOutbox({
     userId: user.telegramChatId,
     chatId: user.telegramChatId,

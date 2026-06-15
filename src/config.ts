@@ -16,6 +16,8 @@ export interface BotConfig {
   hysteresisBand: number;
   /** Source-outage threshold, minutes. Default 5. */
   sourceOutageMinutes: number;
+  /** Daily-summary scheduler tick interval, ms. Default 60_000. */
+  summaryCheckIntervalMs: number;
 }
 
 export function configFromEnv(): BotConfig {
@@ -31,6 +33,7 @@ export function configFromEnv(): BotConfig {
     cooldownMinutes: Number(process.env.COOLDOWN_MINUTES ?? 60),
     hysteresisBand: Number(process.env.HYSTERESIS_BAND ?? 0.005),
     sourceOutageMinutes: Number(process.env.SOURCE_OUTAGE_MINUTES ?? 5),
+    summaryCheckIntervalMs: Number(process.env.SUMMARY_CHECK_INTERVAL_MS ?? 60_000),
   };
 }
 
@@ -64,6 +67,11 @@ export function localHHMM(tz: string, now = new Date()): string {
   return `${h}:${m}`;
 }
 
+/** True if `ts` and `now` fall on the same calendar day in timezone `tz`. */
+export function isSameLocalDay(ts: number, tz: string, now = new Date()): boolean {
+  const fmt = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: tz }).format(d);
+  return fmt(new Date(ts)) === fmt(now);
+}
 /** True if the current local time in `tz` falls within the user's quiet
  *  hours window. Wraps past midnight correctly. */
 export function inQuietHours(tz: string, startHHMM: string, endHHMM: string, now = new Date()): boolean {

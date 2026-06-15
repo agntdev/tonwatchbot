@@ -7,6 +7,7 @@ import { createBot, type BotContext } from "@agntdev/bot-toolkit";
 import type { Bot } from "grammy";
 
 import { registerAdd } from "./commands/add.js";
+import { registerListRemove } from "./commands/list_remove.js";
 import { registerStart, handleOnboardingText } from "./commands/start.js";
 import { adminOnly } from "./middleware.js";
 import type { BotConfig } from "./config.js";
@@ -47,6 +48,7 @@ export function buildBot(token: string, deps: BuildBotDeps): Bot<Ctx> {
   // Each feature task (F02–F11) adds its own registerXxx() call here.
   registerStart(bot, store);
   registerAdd(bot, store, deps.prices);
+  registerListRemove(bot, store);
 
   // ── /help: list of commands (kept short, F02-F11 enhance with detail) ─
   bot.command("help", async (ctx) => {

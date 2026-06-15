@@ -268,5 +268,38 @@
         ]
       }
     ]
+  },
+  {
+    "name": "/price with no argument shows usage",
+    "steps": [
+      {
+        "send": { "text": "/price" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/price with invalid address shape is rejected",
+    "steps": [
+      {
+        "send": { "text": "/price !!!" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/price resolves a valid contract and shows the price card",
+    "steps": [
+      {
+        "send": { "text": "/price EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
   }
 ]

@@ -500,5 +500,42 @@
         ]
       }
     ]
+  },
+  {
+    "name": "/summary on an empty watchlist shows the prompt",
+    "steps": [
+      {
+        "send": { "text": "/summary" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/summary on a populated watchlist shows the cards",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "/summary" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "alert:snooze updates all of the user's cooldowns",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "callback": "alert:snooze:60" },
+        "expect": [
+          { "method": "answerCallbackQuery" }
+        ]
+      }
+    ]
   }
 ]

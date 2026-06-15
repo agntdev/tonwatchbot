@@ -9,6 +9,7 @@ import type { Bot } from "grammy";
 import { registerAdd } from "./commands/add.js";
 import { registerListRemove } from "./commands/list_remove.js";
 import { registerPrice } from "./commands/price.js";
+import { handleSettingsText, registerSettings } from "./commands/settings.js";
 import { registerStart, handleOnboardingText } from "./commands/start.js";
 import { adminOnly } from "./middleware.js";
 import type { BotConfig } from "./config.js";
@@ -51,6 +52,7 @@ export function buildBot(token: string, deps: BuildBotDeps): Bot<Ctx> {
   registerAdd(bot, store, deps.prices);
   registerListRemove(bot, store);
   registerPrice(bot, store, deps.prices);
+  registerSettings(bot, store);
 
   // ── /help: list of commands (kept short, F02-F11 enhance with detail) ─
   bot.command("help", async (ctx) => {
@@ -71,6 +73,7 @@ export function buildBot(token: string, deps: BuildBotDeps): Bot<Ctx> {
       return;
     }
     if (await handleOnboardingText(ctx, store)) return;
+    if (await handleSettingsText(ctx, store)) return;
     // Other dialogs (settings, add_confirm, etc.) are handled in their
     // own feature files. Until those land, we ignore stray non-command
     // text silently to keep the bot non-spammy.

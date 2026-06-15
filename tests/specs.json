@@ -301,5 +301,81 @@
         ]
       }
     ]
+  },
+  {
+    "name": "/settings shows the main menu",
+    "steps": [
+      {
+        "send": { "text": "/settings" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "settings:tz opens the timezone picker",
+    "steps": [
+      { "send": { "text": "/settings" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "callback": "settings:tz" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "settings:defpct accepts a positive number",
+    "steps": [
+      { "send": { "text": "/settings" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "settings:defpct" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "2.5" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "settings:defpct rejects a non-positive number",
+    "steps": [
+      { "send": { "text": "/settings" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "settings:defpct" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "-1" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "settings:deftime accepts a valid range",
+    "steps": [
+      { "send": { "text": "/settings" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "settings:deftime" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "30" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "settings:deftime rejects values out of range",
+    "steps": [
+      { "send": { "text": "/settings" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "settings:deftime" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "3" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
   }
 ]

@@ -31,5 +31,67 @@
         ]
       }
     ]
+  },
+  {
+    "name": "/add with no contract shows usage",
+    "steps": [
+      {
+        "send": { "text": "/add" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Please provide a contract address.\nUsage: /add \\<contract\\_address\\>" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/add with valid contract resolves and shows confirmation",
+    "steps": [
+      {
+        "send": { "text": "/add EQD1234567890abcdefghijklmnopqrstuvwxyz12345678" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "<b>Mock T2EK</b> (T2EK)\nAddress: <code>EQD1234567890abcdefghijklmnopqrstuvwxyz12345678</code>\nDecimals: 9\nPrice: $2.1600\nSource: TonSwap\n\nAdd this token to your watchlist?",
+              "parse_mode": "HTML"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/add confirm yes adds token",
+    "steps": [
+      {
+        "send": { "text": "/add EQD1234567890abcdefghijklmnopqrstuvwxyz12345678" },
+        "expect": []
+      },
+      {
+        "send": { "callback": "add:yes", "messageId": 2 },
+        "expect": [
+          { "method": "answerCallbackQuery", "payload": { "text": "Token added!" } },
+          { "method": "editMessageReplyMarkup" },
+          { "method": "sendMessage", "payload": { "text": "*Mock T2EK* \\(T2EK\\) added to your watchlist\\." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/add confirm no cancels",
+    "steps": [
+      {
+        "send": { "text": "/add EQD1234567890abcdefghijklmnopqrstuvwxyz12345678" },
+        "expect": []
+      },
+      {
+        "send": { "callback": "add:no", "messageId": 2 },
+        "expect": [
+          { "method": "answerCallbackQuery", "payload": { "text": "Canceled." } },
+          { "method": "editMessageReplyMarkup" },
+          { "method": "sendMessage", "payload": { "text": "Token not added\\." } }
+        ]
+      }
+    ]
   }
 ]

@@ -88,5 +88,10 @@ export function buildBot(token: string, deps: BuildBotDeps): Bot<Ctx> {
     // text silently to keep the bot non-spammy.
   });
 
+  // ── foreign callback: claim every unhandled callback_query ──────────
+  bot.on("callback_query:data", async (ctx) => {
+    await ctx.answerCallbackQuery({ text: "Not yours", show_alert: true });
+  });
+
   return bot;
 }

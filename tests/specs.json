@@ -5,7 +5,7 @@
       {
         "send": { "text": "/start" },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "Welcome to TonWatchBot! 👋\nFull onboarding flow lands in F02." } }
+          { "method": "sendMessage", "payload": { "text": "Welcome to TonWatchBot! 👋\nTo send alerts at the right time, pick your timezone:" } }
         ]
       }
     ]

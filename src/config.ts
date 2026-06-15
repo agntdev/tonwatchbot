@@ -51,6 +51,16 @@ export function formatHHMM(mins: number): string {
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
+/** Validate an IANA timezone string using Intl.DateTimeFormat. */
+export function isValidTimezone(tz: string): boolean {
+  try {
+    Intl.DateTimeFormat(undefined, { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Current local time in a user timezone as "HH:MM". */
 export function localHHMM(tz: string, now = new Date()): string {
   const parts = new Intl.DateTimeFormat("en-GB", {

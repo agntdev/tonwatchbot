@@ -587,5 +587,49 @@
       { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
       { "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] }
     ]
+  },
+  {
+    "name": "/admin_alerts with 7d period",
+    "steps": [
+      {
+        "send": { "text": "/admin_alerts 7d", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/admin_alerts with 30d period",
+    "steps": [
+      {
+        "send": { "text": "/admin_alerts 30d", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/admin_export users 7d",
+    "steps": [
+      {
+        "send": { "text": "/admin_export users 7d", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendDocument" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/admin_export alerts 24h",
+    "steps": [
+      {
+        "send": { "text": "/admin_export alerts 24h", "chatId": 9000, "userId": 9000 },
+        "expect": [
+          { "method": "sendDocument" }
+        ]
+      }
+    ]
   }
 ]

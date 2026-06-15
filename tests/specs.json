@@ -145,5 +145,51 @@
         ]
       }
     ]
+  },
+  {
+    "name": "/add with no argument shows usage",
+    "steps": [
+      {
+        "send": { "text": "/add" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Usage: /add <contract>" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/add with invalid address shape is rejected",
+    "steps": [
+      {
+        "send": { "text": "/add !!!" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Invalid address format." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/add resolves a valid contract and shows the confirm card",
+    "steps": [
+      {
+        "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/add confirm inserts the watch and clears the dialog",
+    "steps": [
+      { "send": { "text": "/add EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "callback": "add:confirm:EQBicq4FZj4Y1q4Z8X1z3aBcDeFgH0iJkLmN7oP9qR5sT6uV" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
   }
 ]

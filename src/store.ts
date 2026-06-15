@@ -213,9 +213,9 @@ export class Store {
   }
 
   // ── outbox ─────────────────────────────────────────────────────────────
-  enqueueOutbox(row: Omit<OutboxRow, "id" | "state" | "attempts" | "lastError">): OutboxRow {
+  enqueueOutbox(row: Omit<OutboxRow, "id" | "createdAt" | "state" | "attempts" | "lastError">): OutboxRow {
     const id = this.nextOutboxId++;
-    const full: OutboxRow = { id, state: "pending", attempts: 0, lastError: null, ...row };
+    const full: OutboxRow = { id, createdAt: Date.now(), state: "pending", attempts: 0, lastError: null, ...row };
     this.outbox.push(full);
     return full;
   }

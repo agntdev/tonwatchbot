@@ -6,6 +6,7 @@
 import { createBot, type BotContext } from "@agntdev/bot-toolkit";
 import type { Bot } from "grammy";
 
+import { registerStart, handleOnboardingText } from "./commands/start.js";
 import { adminOnly } from "./middleware.js";
 import type { BotConfig } from "./config.js";
 import type { PriceSource } from "./prices.js";
@@ -41,19 +42,9 @@ export function buildBot(token: string, deps: BuildBotDeps): Bot<Ctx> {
   // ── admin guard for /admin_* ─────────────────────────────────────────
   bot.use(adminOnly(cfg));
 
-  // ── /start: create user row, reply welcome (F02 replaces with full
-  //    onboarding flow that asks for timezone, etc.) ───────────────────
-  bot.command("start", async (ctx) => {
-    const user = store.getOrCreateUser(ctx.from!.id);
-    if (user.timezone !== null) {
-      // Existing user: redraw the watchlist (full implementation in F04).
-      await ctx.reply("Welcome back.");
-      return;
-    }
-    await ctx.reply(
-      "Welcome to TonWatchBot! 👋\nFull onboarding flow lands in F02.",
-    );
-  });
+  // ── feature installers ──────────────────────────────────────────────
+  // Each feature task (F02–F11) adds its own registerXxx() call here.
+  registerStart(bot, store);
 
   // ── /help: list of commands (kept short, F02-F11 enhance with detail) ─
   bot.command("help", async (ctx) => {
@@ -63,21 +54,20 @@ export function buildBot(token: string, deps: BuildBotDeps): Bot<Ctx> {
     );
   });
 
-  // ── fallback: unknown command → /help hint ──────────────────────────
+  // ── text router: dialogs first, then unknown-command fallback ───────
   bot.on("message:text", async (ctx) => {
     const text = ctx.message.text;
     if (text.startsWith("/") && !text.startsWith("/admin_")) {
+      // Unknown command — only if no other command handler matched
+      // (grammY's command router runs first; if we get here on a /-prefix
+      // text, no command handler claimed it).
       await ctx.reply("Unknown command. Try /help.");
       return;
     }
-    // Non-command text outside an active dialog: ignore.
-    if (!ctx.session.dialog) return;
-    // Active dialogs are owned by their feature task; the F02+ flow
-    // handlers will read this branch and process the input. Until then,
-    // acknowledge to avoid silent drops during local dev.
-    if (ctx.session.dialog) {
-      await ctx.reply("Dialog input is not yet wired up — see F02-F11.");
-    }
+    if (await handleOnboardingText(ctx, store)) return;
+    // Other dialogs (settings, add_confirm, etc.) are handled in their
+    // own feature files. Until those land, we ignore stray non-command
+    // text silently to keep the bot non-spammy.
   });
 
   return bot;

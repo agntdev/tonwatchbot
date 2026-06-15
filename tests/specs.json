@@ -1,11 +1,125 @@
 [
   {
-    "name": "/start greets a new user",
+    "name": "/start on a new user shows the timezone picker",
     "steps": [
       {
         "send": { "text": "/start" },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "Welcome to TonWatchBot! 👋\nFull onboarding flow lands in F02." } }
+          { "method": "sendMessage", "payload": { "text": "Welcome to TonWatchBot! 👋\nTo send alerts at the right time, pick your timezone:" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tapping a timezone button sets it and shows defaults",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "callback": "tz:select:Europe/Berlin" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          { "method": "sendMessage", "payload": { "text": "Timezone set: Europe/Berlin.\nQuiet hours default to 23:00–07:00.\nDaily summary at 08:00." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tapping Keep defaults clears the dialog",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "tz:select:Europe/Berlin" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "callback": "defaults:keep" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          { "method": "sendMessage", "payload": { "text": "All set. Try /add <contract> to watch a token, or /help for the full command list." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/start on a user with a timezone says Welcome back",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "tz:select:UTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "defaults:keep" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "/start" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Welcome back." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tz:manual prompts and accepts a typed IANA timezone",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "callback": "tz:manual" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          { "method": "sendMessage", "payload": { "text": "Send your IANA timezone, e.g. `Europe/Berlin` or `America/Chicago`." } }
+        ]
+      },
+      {
+        "send": { "text": "America/Chicago" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Timezone set: America/Chicago.\nQuiet hours default to 23:00–07:00.\nDaily summary at 08:00." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tz:manual rejects an invalid timezone",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "tz:manual" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "Atlantis/Lemuria" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Unknown timezone, try again (e.g. `Europe/Berlin`)." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Change quiet hours accepts HH:MM HH:MM",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "tz:select:UTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "onb:quiet" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "22:00 08:00" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Quiet hours set to 22:00–08:00." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Change summary time accepts HH:MM",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "tz:select:UTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "onb:summary" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "text": "09:30" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Summary time set to 09:30." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Cancel button clears the dialog",
+    "steps": [
+      { "send": { "text": "/start" }, "expect": [{ "method": "sendMessage" }] },
+      {
+        "send": { "callback": "cancel" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          { "method": "editMessageText", "payload": { "text": "Cancelled." } }
         ]
       }
     ]

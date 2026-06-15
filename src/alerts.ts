@@ -16,6 +16,7 @@ import type { Bot } from "grammy";
 import { inQuietHours, quietHoursEndAt, type BotConfig } from "./config.js";
 import type { OutboxRow, PriceSample, User, Watch } from "./types.js";
 import { Store } from "./store.js";
+import type { Ctx } from "./bot.js";
 
 const ALERT_KIND_PRICE = "price" as const;
 const ALERT_KIND_PERCENT = "percent" as const;
@@ -196,17 +197,28 @@ export class AlertEngine {
   /** Tick once. Public so the harness can drive it deterministically. */
   async drain(now = Date.now()): Promise<void> {
     const rows = this.store.listDueOutbox(now, this.cfg.alertDrainBatch);
+    const deferredByUser = new Map<number, number>();
+    for (const row of rows) {
+      if (row.kind !== ALERT_KIND_SUMMARY && row.kind !== ALERT_KIND_OUTAGE) {
+        if (row.dueAt - row.createdAt > 60_000) {
+          deferredByUser.set(row.userId, (deferredByUser.get(row.userId) ?? 0) + 1);
+        }
+      }
+    }
+    const bannerSent = new Set<number>();
     for (const row of rows) {
       try {
-        const text = renderOutboxRow(row);
+        const deferredCount = deferredByUser.get(row.userId);
+        let prefix = "";
+        if (deferredCount !== undefined && !bannerSent.has(row.userId)) {
+          prefix = `You have ${deferredCount} alert${deferredCount > 1 ? "s" : ""} from your quiet hours:\n\n`;
+          bannerSent.add(row.userId);
+        }
+        const text = prefix + renderOutboxRow(row);
         await this.bot.api.sendMessage(row.chatId, text, {
           reply_markup: buildAlertKeyboard(row),
         });
         this.store.markOutboxSent(row.id);
-        if (row.kind !== ALERT_KIND_SUMMARY && row.kind !== ALERT_KIND_OUTAGE) {
-          // Snooze button: sendMessage after the alert with a single inline
-          // button. We attach the snooze button to the message itself.
-        }
       } catch (err) {
         this.store.markOutboxFailed(row.id, String(err));
       }
@@ -247,11 +259,12 @@ function fmtPct(p: number): string {
 function buildAlertKeyboard(row: OutboxRow) {
   // Snooze is only meaningful for price/percent alerts on a specific token.
   if (row.kind === ALERT_KIND_PERCENT || row.kind === ALERT_KIND_PRICE) {
+    const contract = row.payload.contractAddress as string;
     return {
       inline_keyboard: [
         [
-          { text: "View token", callback_data: `price:show:${row.payload.contractAddress}` },
-          { text: "Snooze 1h", callback_data: "alert:snooze:60" },
+          { text: "View token", callback_data: `price:show:${contract}` },
+          { text: "Snooze 1h", callback_data: `alert:snooze:60:${contract}` },
         ],
       ],
     };
@@ -263,4 +276,23 @@ function buildAlertKeyboard(row: OutboxRow) {
       : undefined;
   }
   return undefined;
+}
+
+/** Register alert-related callback handlers: snooze button. */
+export function registerAlertCallbacks(bot: Bot<Ctx>, store: Store): void {
+  bot.callbackQuery(/^alert:snooze:60:(.+)$/, async (ctx) => {
+    const contract = ctx.match[1];
+    const userId = ctx.from?.id;
+    if (!userId) {
+      await ctx.answerCallbackQuery({ text: "Not yours", show_alert: true });
+      return;
+    }
+    const watch = store.getWatch(userId, contract);
+    if (!watch) {
+      await ctx.answerCallbackQuery({ text: "Watch not found", show_alert: false });
+      return;
+    }
+    store.upsertWatch({ ...watch, cooldownUntil: Date.now() + 60 * 60_000 });
+    await ctx.answerCallbackQuery({ text: "Snoozed alerts for 1 hour" });
+  });
 }

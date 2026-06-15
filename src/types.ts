@@ -97,6 +97,8 @@ export interface OutboxRow {
   payload: Record<string, unknown>;
   /** UTC epoch ms; the row is eligible to be sent at or after this time. */
   dueAt: number;
+  /** UTC epoch ms; when the row was created. Used to detect deferred alerts. */
+  createdAt: number;
   state: "pending" | "sent" | "failed";
   attempts: number;
   lastError: string | null;

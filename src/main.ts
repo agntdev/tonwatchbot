@@ -8,6 +8,7 @@ import { configFromEnv } from "./config.js";
 import { StubPriceSource } from "./prices.js";
 import { PricePoller } from "./poller.js";
 import { AlertEngine, evaluateAlerts } from "./alerts.js";
+import { detectOutages } from "./commands/outage.js";
 import { Store } from "./store.js";
 
 const token = process.env.BOT_TOKEN;
@@ -21,7 +22,7 @@ const store = new Store();
 const prices = new StubPriceSource();
 const bot = buildBot(token, { store, prices, cfg });
 const poller = new PricePoller(store, prices, cfg, evaluateAlerts);
-const engine = new AlertEngine(bot, store, cfg);
+const engine = new AlertEngine(bot, store, cfg, (now) => detectOutages(poller, store, cfg, now));
 
 poller.start();
 engine.start();

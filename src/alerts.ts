@@ -179,6 +179,7 @@ export class AlertEngine {
     private readonly bot: Pick<Bot, "api">,
     private readonly store: Store,
     private readonly cfg: BotConfig,
+    private readonly onOutageTick?: (now: number) => void,
   ) {}
 
   start(): void {
@@ -195,6 +196,7 @@ export class AlertEngine {
 
   /** Tick once. Public so the harness can drive it deterministically. */
   async drain(now = Date.now()): Promise<void> {
+    if (this.onOutageTick) this.onOutageTick(now);
     const rows = this.store.listDueOutbox(now, this.cfg.alertDrainBatch);
     for (const row of rows) {
       try {
@@ -203,10 +205,6 @@ export class AlertEngine {
           reply_markup: buildAlertKeyboard(row),
         });
         this.store.markOutboxSent(row.id);
-        if (row.kind !== ALERT_KIND_SUMMARY && row.kind !== ALERT_KIND_OUTAGE) {
-          // Snooze button: sendMessage after the alert with a single inline
-          // button. We attach the snooze button to the message itself.
-        }
       } catch (err) {
         this.store.markOutboxFailed(row.id, String(err));
       }

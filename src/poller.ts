@@ -49,6 +49,21 @@ export class PricePoller {
     return this.lastSuccessBySource.get(source);
   }
 
+  /** All known sources and their last success timestamps. */
+  sourceStatus(): Array<{ source: string; lastSuccess: number | undefined }> {
+    const known = new Set<string>(["TonSwap", "The Graph", "CoinGecko"]);
+    for (const s of this.lastSuccessBySource.keys()) known.add(s);
+    return Array.from(known).map((source) => ({ source, lastSuccess: this.lastSuccessBySource.get(source) }));
+  }
+
+  /** Mark a source as failed at the given time. Used by the alert engine
+   *  to drive the outage detector. */
+  markSourceFailed(source: string, _at = Date.now()): void {
+    // We don't record failures here; lastSuccess stays at its old value.
+    // The outage detector computes `now - lastSuccess` and treats a
+    // missing value as "since the bot started".
+  }
+
   /** Tokens that have at least one enabled watch. */
   private activeTokenIds(): string[] {
     const ids = new Set<string>();

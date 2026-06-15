@@ -537,5 +537,16 @@
         ]
       }
     ]
+  },
+  {
+    "name": "admin:ack is a no-op when no record exists (Already handled)",
+    "steps": [
+      {
+        "send": { "callback": "admin:ack:1" },
+        "expect": [
+          { "method": "answerCallbackQuery" }
+        ]
+      }
+    ]
   }
 ]

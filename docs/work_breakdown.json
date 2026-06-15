@@ -1,0 +1,77 @@
+{
+  "phase": "dev",
+  "tasks": [
+    {
+      "key": "F01",
+      "kind": "foundation",
+      "title": "Bot skeleton, DB schema, makeBot factory, price poller and alert engine",
+      "depends_on": []
+    },
+    {
+      "key": "F02",
+      "kind": "feature",
+      "title": "/start onboarding flow and timezone selection",
+      "depends_on": ["F01"]
+    },
+    {
+      "key": "F03",
+      "kind": "feature",
+      "title": "/add token with contract validation and confirmation dialog",
+      "depends_on": ["F01"]
+    },
+    {
+      "key": "F04",
+      "kind": "feature",
+      "title": "/list and /remove watchlist management with inline buttons",
+      "depends_on": ["F01"]
+    },
+    {
+      "key": "F05",
+      "kind": "feature",
+      "title": "/price query with 1h and 24h change",
+      "depends_on": ["F01"]
+    },
+    {
+      "key": "F06",
+      "kind": "feature",
+      "title": "/settings menu (timezone, quiet hours, summary time, defaults)",
+      "depends_on": ["F01"]
+    },
+    {
+      "key": "F07",
+      "kind": "feature",
+      "title": "Per-watch alert settings (absolute threshold, percent, timeframe)",
+      "depends_on": ["F04", "F06"]
+    },
+    {
+      "key": "F08",
+      "kind": "feature",
+      "title": "Price-alert delivery with cooldown, hysteresis, quiet hours, and snooze",
+      "depends_on": ["F01", "F07"]
+    },
+    {
+      "key": "F09",
+      "kind": "feature",
+      "title": "Scheduled daily summary delivery through the outbox",
+      "depends_on": ["F06", "F08"]
+    },
+    {
+      "key": "F10",
+      "kind": "feature",
+      "title": "Admin commands: /admin_stats, /admin_users, /admin_alerts, /admin_export",
+      "depends_on": ["F01"]
+    },
+    {
+      "key": "F11",
+      "kind": "feature",
+      "title": "Source-outage admin alerts with acknowledge button",
+      "depends_on": ["F10", "F08"]
+    },
+    {
+      "key": "I01",
+      "kind": "integration",
+      "title": "End-to-end dialog specs, README, and cross-flow wiring",
+      "depends_on": ["F02", "F03", "F04", "F05", "F06", "F07", "F08", "F09", "F10", "F11"]
+    }
+  ]
+}

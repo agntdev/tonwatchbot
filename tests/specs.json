@@ -1,0 +1,35 @@
+[
+  {
+    "name": "/start greets a new user",
+    "steps": [
+      {
+        "send": { "text": "/start" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Welcome to TonWatchBot! 👋\nFull onboarding flow lands in F02." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/help lists commands",
+    "steps": [
+      {
+        "send": { "text": "/help" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "TonWatchBot — private TON/jetton price watching.\nCommands: /start /add /remove /list /price /summary /settings" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "unknown command replies with /help hint",
+    "steps": [
+      {
+        "send": { "text": "/foo" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Unknown command. Try /help." } }
+        ]
+      }
+    ]
+  }
+]
